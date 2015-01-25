@@ -3,17 +3,19 @@ from NodeClass import node
 class HungarianAlgorithm:
     
     def __init__(self, n = 1):
-        self.__size = n
-        print("You have selected a ",self.__size,"x",self.__size,"matrix")
-        #create 2d list of nxn nodes
-        self.__node_matrix = [[node() for i in range(self.__size)] for j in range(self.__size)]
-        #user input of nxn matrix values
-        for row in range(self.__size):
-            for column in range(self.__size):
-                cost = eval(input("Enter a value and press Enter: "))
-                self.__node_matrix[row][column].setCost(cost)
-        self.__printMatrix()
-        
+        if len(input_matrix)!=len(input_matrix[0]):
+            print("Please enter a valid n x n sized matrix")
+        else:
+            self.__size = len(input_matrix)
+            print("You have entered a valid ",self.__size,"x",self.__size,"matrix")
+            #create 2d list of nxn nodes
+            self.__node_matrix = [[node() for i in range(self.__size)] for j in range(self.__size)]
+            #user input of nxn matrix values
+            for row in range(self.__size):
+                for column in range(self.__size):
+                    #cost = eval(input("Enter a value and press Enter: "))
+                    self.__node_matrix[row][column].setCost(input_matrix[row][column])
+            self.__printMatrix()
     def __printMatrix(self):
         print("Matrix: ")
         for row in range(self.__size):
