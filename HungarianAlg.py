@@ -34,14 +34,14 @@ class HungarianAlgorithm:
         
         for row in range(self.__size): # retrieve the values in the node matrix in uncovered row and 
             for column in range(self.__size):
-                if(!(self.__node_matrix[row][column].getRow) & !(self.__node_matrix[row][column].getColumn)):
+                if((self.__node_matrix[row][column].getRow == False) & (self.__node_matrix[row][column].getColumn == False)):
                     lowestPossibleValues.append(self.__node_matrix[row][column])
                     
          minValue = min(lowestPossibleValues)#smallest value
 
          for row in range(self.__size): # subtract the minvalue to the uncrossed rows
             for column in range(self.__size):
-                if(!(self.__node_matrix[row][column].getRow)):
+                if((self.__node_matrix[row][column].getRow == False)):
                     self.__node_matrix[row][column] = self.__node_matrix[row][column] - minValue
 
         return minValue #return the min value for the AddlowestUncoveredColumn to do         
