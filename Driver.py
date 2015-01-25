@@ -26,6 +26,7 @@ def main():
     n[3].append(110)
     n[3].append(95)
     n[3].append(115)
+    
     algortihm = HungarianAlgorithm(n)
         #algorithm.Execute()
 

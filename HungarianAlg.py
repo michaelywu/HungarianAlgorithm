@@ -23,9 +23,25 @@ class HungarianAlgorithm:
                 print(self.__node_matrix[row][column].getCost(), end = ' ')
             print()
                 
-    #def __subtractLowestColumn(self,columnNumber):
-
-    #def __subtractLowestRow(self,rowNumber):
+    def __subtractLowestColumn(self,columnNumber):
+        minimum = self.__node_matrix[0][columnNumber].getCost()
+        for row in range(self.__size):
+            if self.__node_matrix[row][columnNumber].getCost() < minimum:
+                minimum = self.__node_matrix[row][columnNumber].getCost()
+        for row in range(self.__size):
+            value = self.__node_matrix[row][columnNumber].getCost()
+            value -= minimum
+            self.__node_matrix[row][columnNumber].setCost(value)
+        
+    def __subtractLowestRow(self,rowNumber):
+        minimum = self.__node_matrix[rowNumber][0].getCost()
+        for column in range(self.__size):
+            if self.__node_matrix[rowNumber][column].getCost() < minimum:
+                minimum = self.__node_matrix[rowNumber][column].getCost()
+        for column in range(self.__size):
+            value = self.__node_matrix[rowNumber][column].getCost()
+            value -= minimum
+            self.__node_matrix[rowNumber][column].setCost(value)
 
     #def __ifLineNumber(self):
 
