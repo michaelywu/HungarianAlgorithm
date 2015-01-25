@@ -2,7 +2,7 @@ from NodeClass import node
 
 class HungarianAlgorithm:
     
-    def __init__(self, n = 1):
+    def __init__(self, input_matrix):
         if len(input_matrix)!=len(input_matrix[0]):
             print("Please enter a valid n x n sized matrix")
         else:
@@ -20,7 +20,7 @@ class HungarianAlgorithm:
         print("Matrix: ")
         for row in range(self.__size):
             for column in range(self.__size):
-                print(self.__node_matrix[row][column].getCost(), end = '')
+                print(self.__node_matrix[row][column].getCost(), end = ' ')
             print()
                 
     #def __subtractLowestColumn(self,columnNumber):
@@ -37,9 +37,9 @@ class HungarianAlgorithm:
                 if((self.__node_matrix[row][column].getRow == False) & (self.__node_matrix[row][column].getColumn == False)):
                     lowestPossibleValues.append(self.__node_matrix[row][column])
                     
-         minValue = min(lowestPossibleValues)#smallest value
+        minValue = min(lowestPossibleValues)#smallest value
 
-         for row in range(self.__size): # subtract the minvalue to the uncrossed rows
+        for row in range(self.__size): # subtract the minvalue to the uncrossed rows
             for column in range(self.__size):
                 if((self.__node_matrix[row][column].getRow == False)):
                     self.__node_matrix[row][column] = self.__node_matrix[row][column] - minValue
