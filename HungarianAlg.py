@@ -2,8 +2,6 @@ from NodeClass import node
 
 class HungarianAlgorithm:
 
-    temp_matrix = None
-    
     def __init__(self, input_matrix):
         if len(input_matrix)!=len(input_matrix[0]):
             print("Please enter a valid n x n sized matrix")
@@ -18,9 +16,8 @@ class HungarianAlgorithm:
                     #cost = eval(input("Enter a value and press Enter: "))
                     self.__node_matrix[row][column].setCost(input_matrix[row][column])
 
-            temp_matrix = input_matrix
             self.__printMatrix()#print original matrix
-            self.__Execute()
+            self.__Execute(input_matrix)
             self.__printMatrix()
     def __printMatrix(self):
         print("Matrix: ")
@@ -166,7 +163,7 @@ class HungarianAlgorithm:
                 if(self.__node_matrix[row][column].getColumn()):
                     self.__node_matrix[row][column].setCost(self.__node_matrix[row][column].getCost() + minValue)
         #self.__printMatrix()            
-    def __Execute(self):
+    def __Execute(self, input_matrix):
 
         #Step 1        
         for row in range(self.__size):
@@ -191,9 +188,9 @@ class HungarianAlgorithm:
                 check = True
         #Algorithm completed
 
-        self.__ParseHungarian()
+        self.__ParseHungarian(input_matrix)
         
-    def __ParseHungarian(self):
+    def __ParseHungarian(self, input_matrix):
         #parses the node matrix to determine the lowest cost
 
         #determine a combination of zeroes
@@ -216,23 +213,36 @@ class HungarianAlgorithm:
             num_row_zeros.append(count_R)
             num_col_zeros.append(count_C)
 
-        print (num_row_zeros)
-        print (num_col_zeros)
+        #print (num_row_zeros)
+        #print (num_col_zeros)
 
+        noIterations = True
         #first find all 'solid' zeroes
         #use num_row_zeros and num_row_col to find the 'solid' zeros
-        while(max(num_col_zeros) > 1 and max(num_row_zeros) > 1): 
+        while(noIterations):
+            rowCount = 0
+            colCount = 0
+            print("1")                
+            print (num_row_zeros)
+            print (num_col_zeros)
             #finds the locations of 'solid' zeros by row and stores in the col_index and row_index
             for zero in range(len(num_row_zeros)):
                 if(num_row_zeros[zero] == 1): # a single zero in this particular row
                     for col in range(self.__size):
-                        if(self.__node_matrix[zero][col].getCost() == 0): #for loop searches for that zero
+                        if(self.__node_matrix[zero][col].getCost() == 0) and (not(col in col_index) ): #for loop searches for that zero
                             row_index.append(zero)
                             col_index.append(col)#hold the location of the zero
 
                             num_row_zeros[zero] = 0 #erase the zero amount in the index
                             num_col_zeros[col] = 0 #reduce the col zero
-            print("Find the row locations")                
+                            
+                            rowCount = rowCount + 1
+
+                            for i in range(self.__size):
+                                if(self.__node_matrix[i][col].getCost() == 0) and i != zero:
+                                    if(num_row_zeros[i] > 0):
+                                        num_row_zeros[i] = num_row_zeros[i] - 1
+            print("2")                
             print (num_row_zeros)
             print (num_col_zeros)
 
@@ -240,17 +250,39 @@ class HungarianAlgorithm:
             for zero in range(len(num_col_zeros)):
                 if(num_col_zeros[zero] == 1): # a single zero in this particular row
                     for row in range(self.__size):
-                        if(self.__node_matrix[row][zero].getCost() == 0): #for loop searches for that zero
+                        if(self.__node_matrix[row][zero].getCost() == 0) and (not(row in row_index)): #for loop searches for that zero
                             row_index.append(row)
                             col_index.append(zero)#hold the location of the zero
 
-                            num_col_zeros[row] = 0 #erase the zero amount in the index
-                            num_row_zeros[zero] = 0#reduce the col zero
-
-            print("Find the col locations")                
+                            num_col_zeros[zero] = 0 #erase the zero amount in the index
+                            num_row_zeros[row] = 0#reduce the col zero
+                            for possibleZero in range(self.__size):
+                                if( self.__node_matrix[row][possibleZero].getCost() == 0) and possibleZero != zero:
+                                    if(num_row_zeros[possibleZero] > 0):
+                                        num_col_zeros[possibleZero] = num_col_zeros[possibleZero] - 1
+                            
+                            colCount = colCount + 1
+            print("3")                
             print (num_row_zeros)
             print (num_col_zeros)
+
+            if(colCount == 0 and rowCount == 0): # gets out of loop
+                #finish or there is multiple output
+                if(self.__size == len(row_index) and self.__size ==len(col_index)):
+                    noIterations = False
+                else:#multiple output, choose the closest row and select that
+                    for row in range(len(num_row_zeros)):
+                        if num_row_zeros[row] != 0:
+                            num_row_zeros[row] = 1
+                            break
+            else:
+                noIterations = True
 
         print("Locations")                
         print (row_index)
         print (col_index)
+
+        best_cost = []
+        for i in range(len(row_index)):
+            best_cost.append(input_matrix[row_index[i]][col_index[i]])
+        print(best_cost)

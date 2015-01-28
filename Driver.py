@@ -80,7 +80,7 @@ def main():
     p[4].append(60)
     p[4].append(50)
     p[4].append(48)
-    algortihm = HungarianAlgorithm(p)
+    algortihm = HungarianAlgorithm(n)
 
 
 main() #invoke main function
