@@ -16,10 +16,9 @@ class HungarianAlgorithm:
                     #cost = eval(input("Enter a value and press Enter: "))
                     self.__node_matrix[row][column].setCost(input_matrix[row][column])
 
-            temp_matrix = input_matrix
             self.__printMatrix()#print original matrix
-            self.__Execute()
-            self.__printMatrix()
+            self.__Execute(input_matrix)
+            #self.__printMatrix()
     def __printMatrix(self):
         print("Matrix: ")
         for row in range(self.__size):
@@ -164,12 +163,12 @@ class HungarianAlgorithm:
                 if(self.__node_matrix[row][column].getColumn()):
                     self.__node_matrix[row][column].setCost(self.__node_matrix[row][column].getCost() + minValue)
         #self.__printMatrix()            
-    def __Execute(self):
+    def __Execute(self, input_matrix):
 
         #Step 1        
         for row in range(self.__size):
             self.__subtractLowestRow(row)
-         #Step 2
+     #Step 2
         for col in range(self.__size):
             self.__subtractLowestColumn(col)
             
@@ -189,5 +188,127 @@ class HungarianAlgorithm:
                 check = True
         #Algorithm completed
 
+        self.__ParseHungarian(input_matrix)
         
-                
+    def __ParseHungarian(self, input_matrix):
+        #parses the node matrix to determine the lowest cost
+
+        #determine a combination of zeroes
+        #first find all 'solid' zeroes
+        col_index = [] # col_index[i] and row_index[i] will hold a location
+        row_index = [] # on the matrix where there are zeroes
+
+        num_row_zeros = []
+         #will load the number of zeroes for each column and row
+        num_col_zeros = []
+        
+        for row in range(self.__size): # counts how many zeros for each column and row
+            count_R = 0
+            count_C = 0
+            for column in range(self.__size):
+                if self.__node_matrix[row][column].getCost() == 0:
+                    count_R=count_R+1
+                if self.__node_matrix[column][row].getCost() == 0:
+                    count_C=count_C+1
+            num_row_zeros.append(count_R)
+            num_col_zeros.append(count_C)
+
+        #print (num_row_zeros)
+        #print (num_col_zeros)
+
+        noIterations = True
+        #first find all 'solid' zeroes
+        #use num_row_zeros and num_row_col to find the 'solid' zeros
+        while(noIterations):
+            rowCount = 0
+            colCount = 0
+            #print("1")                
+            #print (num_row_zeros)
+            #print (num_col_zeros)
+            #finds the locations of 'solid' zeros by row and stores in the col_index and row_index
+            for zero in range(len(num_row_zeros)):
+                if(num_row_zeros[zero] == 1): # a single zero in this particular row
+                    for col in range(self.__size):
+                        if(self.__node_matrix[zero][col].getCost() == 0) and (not(col in col_index) ): #for loop searches for that zero
+                            row_index.append(zero)
+                            col_index.append(col)#hold the location of the zero
+
+                            num_row_zeros[zero] = 0 #erase the zero amount in the index
+                            num_col_zeros[col] = 0 #reduce the col zero
+                            rowCount = rowCount + 1
+
+                            for i in range(self.__size):
+                                if(self.__node_matrix[i][col].getCost() == 0) and i != zero:
+                                    if(num_row_zeros[i] > 0):
+                                        num_row_zeros[i] = num_row_zeros[i] - 1
+                                if(self.__node_matrix[zero][i].getCost() == 0) and i != col:
+                                    if(num_col_zeros[i] > 0):
+                                        num_col_zeros[i] = num_col_zeros[i] - 1
+                    
+                        
+                            #print("TEST")
+                            #print (num_row_zeros)
+                            #print (num_col_zeros)
+                            #print (zero)
+                            #print(col)
+                            break #get out of loop
+            #print("2")                
+            #print (num_row_zeros)
+            #print (num_col_zeros)
+
+            #finds the locations of 'solid' zeros by col and store in the col_index and row_index
+            for zero in range(len(num_col_zeros)):
+                if(num_col_zeros[zero] == 1): # a single zero in this particular row
+                    for row in range(self.__size):
+                        if(self.__node_matrix[row][zero].getCost() == 0) and (not(row in row_index)): #for loop searches for that zero
+                            row_index.append(row)
+                            col_index.append(zero)#hold the location of the zero
+
+                            num_col_zeros[zero] = 0 #erase the zero amount in the index
+                            num_row_zeros[row] = 0#reduce the col zero
+                            for i in range(self.__size):
+                                if( self.__node_matrix[row][i].getCost() == 0) and i != zero:
+                                    if(num_col_zeros[i] > 0):
+                                        num_col_zeros[i] = num_col_zeros[i] - 1
+                                if( self.__node_matrix[i][zero].getCost() == 0) and i != row:
+                                    if(num_row_zeros[i] > 0):
+                                        num_row_zeros[i] = num_col_zeros[i] - 1
+                            
+                            colCount = colCount + 1
+
+                            break
+            #print("3")                
+            #print (num_row_zeros)
+            #print (num_col_zeros)
+
+            if(colCount == 0 and rowCount == 0): # gets out of loop
+                #finish or there is multiple output
+                if(self.__size == len(row_index) and self.__size ==len(col_index)):
+                    noIterations = False
+                else:#multiple output, choose the closest row and select that
+                    for row in range(len(num_row_zeros)):
+                        if num_row_zeros[row] != 0:
+                            num_row_zeros[row] = 1
+                            break
+            else:
+                noIterations = True
+
+        #print("Locations")                
+        #print (row_index)
+        #print (col_index)
+
+        best_cost = []
+        for i in range(len(row_index)):
+            best_cost.append(input_matrix[row_index[i]][col_index[i]])
+        
+        print("Row Index (1st row) & Column Index (2nd row): ")
+        print(row_index)
+        print(col_index)
+        print("The corresponding costs: ")
+        print(best_cost)
+        
+        total_cost = 0
+        for i in range(len(best_cost)):
+            total_cost = total_cost +best_cost[i]
+        print("The lowest cost in this matrix: ")
+        print(total_cost)
